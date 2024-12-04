@@ -34,3 +34,15 @@ a {
 .btn:disabled {
     @apply text-neutral-400 bg-neutral-700;
 }
+
+.chat-input {
+    @apply w-full p-2 border rounded bg-gray-100 text-black;
+}
+
+.chat-button {
+    @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600;
+}
+
+.chat-response {
+    @apply p-2 bg-gray-100 text-black border rounded;
+}

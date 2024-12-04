@@ -1,49 +1,67 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // For navigation
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./utils/firebase"; // Adjust the path as necessary
 
-export default function Page() {
-    const [message, setMessage] = useState(""); // Input from user
-    const [response, setResponse] = useState(""); // OpenAI response
+export default function LoginPage() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
+    const router = useRouter();
 
-    const sendMessage = async () => {
+    const handleSignup = async () => {
         try {
-            const res = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message }),
-            });
-            const data = await res.json();
-            setResponse(data);
+            await createUserWithEmailAndPassword(auth, email, password);
+            setMessage("Signup successful! You can now log in.");
         } catch (error) {
-            setResponse({ error: "Failed to fetch response from API" });
+            setMessage(`Signup failed: ${error.message}`);
+        }
+    };
+
+    const handleLogin = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            setMessage("Login successful!");
+            router.push("/chat"); // Redirect to chat page
+        } catch (error) {
+            setMessage(`Login failed: ${error.message}`);
         }
     };
 
     return (
         <main className="flex flex-col items-center min-h-screen p-4">
-            {/* Chat Section */}
-            <section className="w-full max-w-lg flex flex-col gap-4">
-                <h1 className="text-2xl font-bold mb-4">Chat with OpenAI</h1>
-                <textarea
-                    className="chat-input mb-4"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Type your message here..."
+            <h1 className="text-2xl font-bold mb-6">Login or Signup</h1>
+            <div className="w-full max-w-md flex flex-col gap-4">
+                <input
+                    type="email"
+                    placeholder="Email"
+                    className="border p-2 rounded text-black"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    className="border p-2 rounded text-black"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
-                    className="chat-button"
-                    onClick={sendMessage}
+                    onClick={handleSignup}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                 >
-                    Send
+                    Signup
                 </button>
-                <div className="mt-4">
-                    <h2 className="font-bold">Response:</h2>
-                    <div className="chat-response">
-                        {response?.choices?.[0]?.message?.content || "No response yet."}
-                    </div>
-                </div>
-            </section>
+                <button
+                    onClick={handleLogin}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                    Login
+                </button>
+            </div>
+            {message && <p className="mt-4 text-red-500">{message}</p>}
         </main>
     );
 }

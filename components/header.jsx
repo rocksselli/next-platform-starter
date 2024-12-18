@@ -7,7 +7,7 @@ const navItems = [
     { linkText: 'Home', href: '/' },
     { linkText: 'Reafirmante', href: '/reafirmante' },
     { linkText: 'ReffirmYou', href: '/reaffirmyou' },
-    { linkText: 'Faith and Prosperity', href: '/faith' },
+    { linkText: 'Faith and Prosperity', href: '/faith-and-prosperity' },
     { linkText: 'Historie til Bilder', href: '/bilder' },
     //{ linkText: 'Classics', href: '/classics' }
 ];
